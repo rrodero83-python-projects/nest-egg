@@ -52,7 +52,11 @@ start_value = default_input("Input starting value of investments: \n", '2000000'
 while not start_value.isdigit():
     start_value = input("Invalid input! Input integer only: ")
 
-withdrawal = default_input("Input annual pre-tax withdrawal (today's $): \n", '80000')
+withdrawal_1 = default_input("Input annual pre-tax withdrawal for first 5 yrs (today's $): \n", '100000')
+while not withdrawal_1.isdigit():
+    withdrawal_1 = input("Invalid input! Input integer only: ")
+
+withdrawal_2 = default_input("Input annual pre-tax withdrawal (today's $): \n", '80000')
 while not withdrawal.isdigit():
     withdrawal = input("Invalid input! Input integer only: ")
 
@@ -106,9 +110,16 @@ def montecarlo(returns):
 
             # don't adjust for inflation the first year
             if index == 0:
-                withdraw_infl_adj = int(withdrawal)
+                withdraw_infl_adj_1 = int(withdrawal_1)
+                withdraw_infl_adj_2 = int(withdrawal_2)
             else:
-                withdraw_infl_adj = int(withdraw_infl_adj * (1 + infl))
+                withdraw_infl_adj_1 = int(withdraw_infl_adj_1 * (1 + infl))
+                withdraw_infl_adj_2 = int(withdraw_infl_adj_2 * (1 + infl))
+
+            if index < 5:
+                withdraw_infl_adj = withdraw_infl_adj_1
+            else:
+                withdraw_infl_adj = withdraw_infl_adj_2
 
             investments -= withdraw_infl_adj
             investments = int(investments * (1 + i))
@@ -135,7 +146,8 @@ def bankrupt_prob(outcome, bankrupt_count):
 
     print("\nInvestment type: {}".format(invest_type))
     print("Starting value: ${:,}".format(int(start_value)))
-    print("Annual withdrawal: ${:,}".format(int(withdrawal)))
+    print("Annual withdrawal first 5 yrs: ${:,}".format(int(withdrawal_1)))
+    print("Annual withdrawal after 5 yrs: ${:,}".format(int(withdrawal_2)))
     print("Years in retirement (min­ml­max): {}­{}­{}"
           .format(min_years, most_likely_years, max_years))
     print("Number of runs: {:,}\n".format(len(outcome)))
